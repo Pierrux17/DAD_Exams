@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('exams', function (Blueprint $table) {
             $table->id();
-            $table->float('result');
-            $table->enum('status', ['Réussi', 'Raté'])->default('Raté');
+            $table->float('result')->nullable();
+            $table->string('status')->default('En cours');
             $table->boolean('is_validated')->default(false);
             $table->timestamps();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');

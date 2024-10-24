@@ -17,4 +17,10 @@ class Question extends Model
     public function topic(){
         return $this->belongsTo(Topic::class);
     }
+
+    public function exams()
+    {
+        return $this->belongsToMany(Exam::class, 'exam_question');
+    }
+
 }

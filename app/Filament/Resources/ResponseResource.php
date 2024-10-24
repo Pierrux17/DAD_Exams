@@ -19,7 +19,7 @@ class ResponseResource extends Resource
 {
     protected static ?string $model = Response::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-bottom-center-text';
 
     public static function form(Form $form): Form
     {
@@ -54,16 +54,16 @@ class ResponseResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('exam.id')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('question.id')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('user_answer')
                     ->formatStateUsing(fn ($state) => $state ? 'Oui' : 'Non'),
                 Tables\Columns\TextColumn::make('is_correct')
                     ->formatStateUsing(fn ($state) => $state ? 'Oui' : 'Non'),
-                Tables\Columns\TextColumn::make('question.id')
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('exam.id')
-                    ->sortable()
-                    ->searchable(),
             ])
             ->filters([
                 //

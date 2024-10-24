@@ -46,17 +46,22 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function exams()
+    {
+        return $this->hasMany(Exam::class);
+    }
+
     public static function roles()
     {
         return [
             'admin',
             'client',
         ];
-    }
-
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
     }
 
     public function isAdmin()
