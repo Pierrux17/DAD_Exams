@@ -2,6 +2,7 @@
 
 use App\Livewire\ExamPage;
 use App\Livewire\HomePage;
+use App\Livewire\QuestionPage;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,3 +20,4 @@ Route::get('/', HomePage::class);
 
 // Route::get('/exam/{examId}', ExamPage::class)->name('exam.show');
 Route::get('/exam/{token}', ExamPage::class)->name('exam.show');
+Route::get('/exam/{token}/questions', QuestionPage::class)->name('exam.questions');

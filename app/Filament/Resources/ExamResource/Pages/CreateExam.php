@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ExamResource\Pages;
 
 use App\Filament\Resources\ExamResource;
 use App\Models\Question;
+use App\Models\Response;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Log;
@@ -25,6 +26,14 @@ class CreateExam extends CreateRecord
         ->limit(3)
         ->get();
 
-        $exam->questions()->attach($questions);
+        foreach ($questions as $question) {
+            Log::info($question->id . ' - ' . $question->text);
+            Response::create([
+                'exam_id' => $exam->id,
+                'question_id' => $question->id,
+                'user_answer' => null,
+                'is_correct' => false,
+            ]);
+        }
     }
 }

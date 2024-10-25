@@ -16,17 +16,31 @@ class Exam extends Model
     public $timestamps = true;
     protected $fillable = ['result', 'status', 'is_validated', 'exam_date', 'place', 'user_id', 'topic_id'];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function topic(){
+    public function topic()
+    {
         return $this->belongsTo(Topic::class);
+    }
+
+    public function responses()
+    {
+        return $this->hasMany(Response::class, 'fk_exam_id');
     }
 
     public function questions()
     {
-        return $this->belongsToMany(Question::class, 'exam_question');
+        return $this->hasManyThrough(
+            Question::class,
+            Response::class,
+            'fk_exam_id', // Clé étrangère dans la table Response
+            'id',          // Clé primaire dans la table Question
+            'id',          // Clé primaire dans la table Exam
+            'fk_question_id' // Clé étrangère dans la table Response pour la question
+        );
     }
 
 
@@ -35,15 +49,17 @@ class Exam extends Model
         return [
             'En attente',
             'En cours',
+            'Terminé',
             'Réussi',
             'Raté',
+            'Erreur',
         ];
     }
 
     public function generateToken()
     {
         $this->token = Str::random(60);
-        $this->token_expires_at = now()->addDays(20); 
+        $this->token_expires_at = now()->addDays(20);
         $this->save();
 
         Log::info("Token généré pour l'examen ID {$this->id} : {$this->token}");

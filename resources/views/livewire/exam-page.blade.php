@@ -6,13 +6,14 @@
         <p><strong>Lieu de l'examen :</strong> {{ $exam->place }}</p>
         <p><strong>Topic :</strong> {{ $exam->topic->name }}</p>
 
-        <h2>Questions :</h2>
-        <ul>
-            @foreach($questions as $question)
-                <li>{{ $question->text }}</li>
-            @endforeach
-        </ul>
+        @if($exam->status == 'En attente')
+            <form wire:submit.prevent="submit">
+                <button type="submit">Commencer l'examen</button>
+            </form>
+        @else
+            <p>Examen terminé</p>
+        @endif
     @else
-        <p>Examen introuvable.</p>
+        <p>Examen introuvable</p>
     @endif
 </div>

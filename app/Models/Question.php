@@ -20,7 +20,14 @@ class Question extends Model
 
     public function exams()
     {
-        return $this->belongsToMany(Exam::class, 'exam_question');
+        return $this->hasManyThrough(
+            Exam::class,
+            Response::class,
+            'fk_question_id', // Clé étrangère dans la table Response pour la question
+            'id',             // Clé primaire dans la table Exam
+            'id',             // Clé primaire dans la table Question
+            'fk_exam_id'      // Clé étrangère dans la table Response pour l'examen
+        );
     }
 
 }
