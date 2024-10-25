@@ -15,20 +15,24 @@ class ExamPage extends Component
     protected ExamRepositoryInterface $examRepository;
     public $exam;
     public $token;
+    public $result;
 
-    public function __construct(ExamRepositoryInterface $examRepository)
+    public function boot(ExamRepositoryInterface $examRepository)
     {
         $this->examRepository = $examRepository;
     }
 
     public function mount($token)
     {
-        $this->token = $token;
-        $this->exam = $this->examRepository->findByToken($token);
+        $this->exam = $this->examRepository->findByToken($this->token);
+
+        $this->examRepository->evaluateExam($this->exam->id);
 
         if (!$this->exam) {
             session()->flash('error', 'Examen non trouvé ou token expiré.');
             return redirect()->route('home');
+        } else {
+
         }
     }
 

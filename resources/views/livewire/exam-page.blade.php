@@ -12,6 +12,10 @@
             </form>
         @else
             <p>Examen terminé</p>
+
+            <!-- Afficher les résultats de l'examen -->
+            <p><strong>Result :</strong> {{ $exam->result }} %</p>
+            <p><strong>Statut :</strong> {{ $exam->status }}</p>
         @endif
     @else
         <p>Examen introuvable</p>

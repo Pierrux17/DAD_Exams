@@ -23,7 +23,7 @@ class CreateExam extends CreateRecord
 
         $questions = Question::where('topic_id', $exam->topic_id)
         ->inRandomOrder()
-        ->limit(3)
+        ->limit(5)
         ->get();
 
         foreach ($questions as $question) {
