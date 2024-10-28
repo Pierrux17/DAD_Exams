@@ -73,17 +73,24 @@ class ExamRepository implements ExamRepositoryInterface
             DB::beginTransaction();
 
             $result = $this->calculateResult($examId);
-            $isPassed = $result['percentage'] >= self::PASSING_SCORE;
-            $status = $isPassed ? 'Réussi' : 'Échoué';
 
-            $exam = $this->exam->findOrFail($examId);
-            $exam->status = $status;
-            $exam->result = $result['percentage'];
-            $exam->save();
+            if(!$result){
+                $isPassed = $result['percentage'] >= self::PASSING_SCORE;
+                $status = $isPassed ? 'Réussi' : 'Raté';
+    
+                $exam = $this->exam->findOrFail($examId);
+                $exam->status = $status;
+                $exam->result = $result['percentage'];
+                $exam->save();
+    
+                DB::commit();
+    
+                Log::info("Évaluation de l'examen {$examId} terminée. Résultat: {$status}");
+            }
+            else{
+                Log::info('Resultat est actuellement nul ');
+            }
 
-            DB::commit();
-
-            Log::info("Évaluation de l'examen {$examId} terminée. Résultat: {$status}");
             return true;
 
         } catch (\Exception $e) {

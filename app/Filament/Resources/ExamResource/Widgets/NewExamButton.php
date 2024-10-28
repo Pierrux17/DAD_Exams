@@ -11,8 +11,15 @@ class NewExamButton extends Widget
 {
     protected static string $view = 'filament.resources.exam-resource.widgets.new-exam-button';
 
-    public function render(): View
+    protected function getViewData(): array
     {
-        return view(static::$view);
+        return [
+            'register' => ExamResource::getUrl('exam_register'),
+        ];
     }
+
+    // public function render(): View
+    // {
+    //     return view(static::$view);
+    // }
 }

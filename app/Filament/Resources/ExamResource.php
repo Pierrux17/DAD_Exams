@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ExamResource\Pages;
 use App\Filament\Resources\ExamResource\RelationManagers;
+use App\Filament\Resources\ExamResource\RelationManagers\UserRelationManager;
 use App\Models\Exam;
 use App\Models\User;
 use App\Models\Company;
@@ -58,6 +59,15 @@ class ExamResource extends Resource
                 ])->columnSpan(1),
 
                 Section::make('Informations')->schema([
+                    Select::make('status')
+                        ->options([
+                            'En attente' => 'En attente',
+                            'En cours' => 'En cours',
+                            'Terminé' => 'Terminé',
+                            'Réussi' => 'Réussi',
+                            'Raté' => 'Raté',
+                            'Erreur' => 'Erreur',
+                        ]),
                     Select::make('topic_id')
                         ->relationship('topic', 'name')
                         ->required(),
@@ -68,7 +78,20 @@ class ExamResource extends Resource
                     DatePicker::make('exam_date')
                         ->label('Date de l\'examen')
                         ->required(),
+                    Select::make('is_validated')
+                        ->label('Validé')
+                        ->options([
+                            true => 'Oui',
+                            false => 'Non',
+                        ])
+                        ->default(false)
+                        ->required(),
                 ])->columns(3),
+
+                Section::make('Résultat')->schema([
+                    TextInput::make('result')
+                        ->numeric(),
+                ])
             ]);
     }
 
@@ -113,7 +136,7 @@ class ExamResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            UserRelationManager::class,
         ];
     }
 
@@ -123,6 +146,7 @@ class ExamResource extends Resource
             'index' => Pages\ListExams::route('/'),
             'create' => Pages\CreateExam::route('/create'),
             'edit' => Pages\EditExam::route('/{record}/edit'),
+            'exam_register' => Pages\ExamRegister::route('/exam-register'),
         ];
     }
 }

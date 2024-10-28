@@ -13,27 +13,27 @@ class CreateExam extends CreateRecord
 {
     protected static string $resource = ExamResource::class;
 
-    protected function afterCreate(): void
-    {
-        $exam = $this->record;
+    // protected function afterCreate(): void
+    // {
+    //     $exam = $this->record;
 
-        $token = $exam->generateToken();
+    //     $token = $exam->generateToken();
 
-        // Log::info("Token généré pour l'examen ID {$exam->id} : {$token}");
+    //     // Log::info("Token généré pour l'examen ID {$exam->id} : {$token}");
 
-        $questions = Question::where('topic_id', $exam->topic_id)
-        ->inRandomOrder()
-        ->limit(5)
-        ->get();
+    //     $questions = Question::where('topic_id', $exam->topic_id)
+    //     ->inRandomOrder()
+    //     ->limit(5)
+    //     ->get();
 
-        foreach ($questions as $question) {
-            Log::info($question->id . ' - ' . $question->text);
-            Response::create([
-                'exam_id' => $exam->id,
-                'question_id' => $question->id,
-                'user_answer' => null,
-                'is_correct' => false,
-            ]);
-        }
-    }
+    //     foreach ($questions as $question) {
+    //         Log::info($question->id . ' - ' . $question->text);
+    //         Response::create([
+    //             'exam_id' => $exam->id,
+    //             'question_id' => $question->id,
+    //             'user_answer' => null,
+    //             'is_correct' => false,
+    //         ]);
+    //     }
+    // }
 }
