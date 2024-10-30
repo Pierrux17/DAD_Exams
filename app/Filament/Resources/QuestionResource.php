@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\QuestionResource\Pages;
 use App\Filament\Resources\QuestionResource\RelationManagers;
 use App\Models\Question;
+use App\Models\Topic;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,6 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+
 
 class QuestionResource extends Resource
 {
@@ -55,14 +59,31 @@ class QuestionResource extends Resource
                 Tables\Columns\TextColumn::make('text')
                     ->searchable(),
                 // Tables\Columns\ImageColumn::make('text'),
-                Tables\Columns\TextColumn::make('expected_answer')
-                    ->formatStateUsing(fn ($state) => $state ? 'Oui' : 'Non'),  
+                // Tables\Columns\TextColumn::make('expected_answer')
+                //     ->formatStateUsing(fn ($state) => $state ? 'Oui' : 'Non'),
+                Tables\Columns\IconColumn::make('expected_answer')
+                    ->label('Réponse attendue')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle'),
                 Tables\Columns\TextColumn::make('topic.name')
                     ->sortable()
                     ->searchable(),
             ])
             ->filters([
-                //
+                Filter::make('topic_id')
+                    ->form([
+                        Forms\Components\CheckboxList::make('topics')
+                            ->label('Filtrer par Topic')
+                            ->options(Topic::all()->pluck('name', 'id')->toArray())
+                            ->columns(1),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (isset($data['topics']) && !empty($data['topics'])) {
+                            return $query->whereIn('topic_id', $data['topics']);
+                        }
+                        return $query;
+                    }),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

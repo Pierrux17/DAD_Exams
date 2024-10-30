@@ -10,7 +10,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class NextExams extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 'half';
 
     public function table(Table $table): Table
     {
@@ -28,9 +28,6 @@ class NextExams extends BaseWidget
                 Tables\Columns\TextColumn::make('user.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('topic.name'),
-                Tables\Columns\TextColumn::make('status')
-                    ->searchable()
-                    ->sortable(),
             ]);
     }
 }

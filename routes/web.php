@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', HomePage::class);
+Route::get('/', HomePage::class)->name('home');
 
 // Route::get('/exam/{examId}', ExamPage::class)->name('exam.show');
 Route::get('/exam/{token}', ExamPage::class)->name('exam.show');
-Route::get('/exam/{token}/questions', QuestionPage::class)->name('exam.questions');
+Route::get('/exam/{token}/questions', QuestionPage::class)->middleware('check.exam.status')->name('exam.questions');

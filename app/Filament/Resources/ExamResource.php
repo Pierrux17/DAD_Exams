@@ -8,6 +8,7 @@ use App\Filament\Resources\ExamResource\RelationManagers\UserRelationManager;
 use App\Models\Exam;
 use App\Models\User;
 use App\Models\Company;
+use App\Models\Topic;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -20,6 +21,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 
 class ExamResource extends Resource
 {
@@ -99,6 +102,8 @@ class ExamResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('exam_date')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('id')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('result')
@@ -106,8 +111,12 @@ class ExamResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('is_validated')
-                    ->formatStateUsing(fn($state) => $state ? 'Oui' : 'Non'),
+                Tables\Columns\IconColumn::make('is_validated')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle'),
+                // Tables\Columns\TextColumn::make('is_validated')
+                //     ->formatStateUsing(fn($state) => $state ? 'Oui' : 'Non'),
                 Tables\Columns\TextColumn::make('user.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.company.name')
@@ -117,7 +126,25 @@ class ExamResource extends Resource
                 Tables\Columns\TextColumn::make('topic.name')
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->label('Filtrer par Statut')
+                    ->options(array_combine(Exam::status(), Exam::status())),
+                SelectFilter::make('user_id')
+                    ->label('Filtrer par Utilisateur')
+                    ->options(User::all()->pluck('name', 'id')->toArray()),
+                Filter::make('topic_id')
+                    ->form([
+                        Forms\Components\CheckboxList::make('topics')
+                            ->label('Filtrer par Topic')
+                            ->options(Topic::all()->pluck('name', 'id')->toArray())
+                            ->columns(1),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (isset($data['topics']) && !empty($data['topics'])) {
+                            return $query->whereIn('topic_id', $data['topics']);
+                        }
+                        return $query;
+                    }),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

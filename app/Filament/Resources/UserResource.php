@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\Company;
 use App\Models\User;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Components\Tab;
+use Filament\Tables\Filters\SelectFilter;
 
 class UserResource extends Resource
 {
@@ -82,7 +84,9 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('company.name'),
             ])
             ->filters([
-                //
+                SelectFilter::make('company_id')
+                    ->label('Filtrer par entreprise')
+                    ->options(Company::all()->pluck('name', 'id')->toArray()),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

@@ -50,8 +50,8 @@ class ExamRepository implements ExamRepositoryInterface
         $totalQuestions = $responses->count();
         $correctAnswers = 0;
 
-        foreach($responses as $response) {
-            if($response->user_answer === $response->question->expected_answer){
+        foreach ($responses as $response) {
+            if ($response->user_answer === $response->question->expected_answer) {
                 $correctAnswers++;
                 $response->is_correct = true;
             } else {
@@ -72,9 +72,10 @@ class ExamRepository implements ExamRepositoryInterface
         try {
             DB::beginTransaction();
 
-            $result = $this->calculateResult($examId);
+            if($this->exam->findOrFail($examId)->status !== 'En attente')
+            {
+                $result = $this->calculateResult($examId);
 
-            if(!$result){
                 $isPassed = $result['percentage'] >= self::PASSING_SCORE;
                 $status = $isPassed ? 'Réussi' : 'Raté';
     
@@ -86,13 +87,11 @@ class ExamRepository implements ExamRepositoryInterface
                 DB::commit();
     
                 Log::info("Évaluation de l'examen {$examId} terminée. Résultat: {$status}");
+            } else 
+            {
+                Log::info("Arrivé sur la page de l'examen --> En attente");
             }
-            else{
-                Log::info('Resultat est actuellement nul ');
-            }
-
             return true;
-
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("Erreur lors de l'évaluation de l'examen {$examId}: " . $e->getMessage());

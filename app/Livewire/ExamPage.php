@@ -26,14 +26,13 @@ class ExamPage extends Component
     {
         $this->exam = $this->examRepository->findByToken($this->token);
 
-        $this->examRepository->evaluateExam($this->exam->id);
-
-        if (!$this->exam) {
+        if (!$this->exam || $this->exam->token_expire_at > now()) {
             session()->flash('error', 'Examen non trouvé ou token expiré.');
+            Log::info('Examen non trouvé ou token expiré.');
             return redirect()->route('home');
-        } else {
-
         }
+
+        $this->examRepository->evaluateExam($this->exam->id);
     }
 
     public function submit()
@@ -44,8 +43,6 @@ class ExamPage extends Component
 
     public function render()
     {
-        return view('livewire.exam-page', [
-            'exam' => $this->exam,
-        ]);
+        return view('livewire.exam-page', ['exam' => $this->exam]);
     }
 }

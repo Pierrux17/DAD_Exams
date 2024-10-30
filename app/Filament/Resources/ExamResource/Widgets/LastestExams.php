@@ -18,7 +18,7 @@ class LastestExams extends BaseWidget
         return $table
             ->query(ExamResource::getEloquentQuery()->whereNotIn('status', ['En cours', 'En attente']))
             ->defaultPaginationPageOption(10)
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('exam_date', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('exam_date')
                     ->label('Date')

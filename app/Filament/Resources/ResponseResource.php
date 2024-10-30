@@ -60,10 +60,18 @@ class ResponseResource extends Resource
                 Tables\Columns\TextColumn::make('question.id')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('user_answer')
-                    ->formatStateUsing(fn ($state) => $state ? 'Oui' : 'Non'),
-                Tables\Columns\TextColumn::make('is_correct')
-                    ->formatStateUsing(fn ($state) => $state ? 'Oui' : 'Non'),
+                Tables\Columns\IconColumn::make('user_answer')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle'),
+                Tables\Columns\IconColumn::make('is_correct')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle'),
+                // Tables\Columns\TextColumn::make('user_answer')
+                //     ->formatStateUsing(fn ($state) => $state ? 'Oui' : 'Non'),
+                // Tables\Columns\TextColumn::make('is_correct')
+                //     ->formatStateUsing(fn ($state) => $state ? 'Oui' : 'Non'),
             ])
             ->filters([
                 //
