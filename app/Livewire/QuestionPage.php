@@ -23,7 +23,6 @@ class QuestionPage extends Component
         $this->examRepository = $examRepository;
     }
 
-
     public function mount($token)
     {
         $this->exam = $this->examRepository->findByToken($this->token);

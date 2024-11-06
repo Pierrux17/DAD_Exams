@@ -56,6 +56,8 @@ class QuestionResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('text')
                     ->searchable(),
                 // Tables\Columns\ImageColumn::make('text'),

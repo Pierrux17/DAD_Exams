@@ -25,6 +25,7 @@ class ExamPage extends Component
     public function mount($token)
     {
         $this->exam = $this->examRepository->findByToken($this->token);
+        Log::info("Examen trouvé - ID : " . $this->exam->id);
 
         if (!$this->exam || $this->exam->token_expire_at > now()) {
             session()->flash('error', 'Examen non trouvé ou token expiré.');
@@ -32,10 +33,10 @@ class ExamPage extends Component
             return redirect()->route('home');
         }
 
-        $this->examRepository->evaluateExam($this->exam->id);
+        // $this->examRepository->evaluateExam($this->exam->id);
     }
 
-    public function submit()
+    public function startExam()
     {
         $this->examRepository->updateStatus($this->exam->id, 'En cours');
         return Redirect::route('exam.questions', ['token' => $this->token]);

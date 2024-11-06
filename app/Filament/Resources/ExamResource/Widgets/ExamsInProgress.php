@@ -29,7 +29,6 @@ class ExamsInProgress extends BaseWidget
                     ->sortable(),
                 Tables\Columns\TextColumn::make('topic.name'),
                 Tables\Columns\TextColumn::make('status')
-                    ->searchable()
                     ->sortable(),
             ]);
     }
