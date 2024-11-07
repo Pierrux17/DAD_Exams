@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ExamResource\Pages;
 use App\Filament\Resources\ExamResource\RelationManagers;
+use App\Filament\Resources\ExamResource\RelationManagers\ResponsesRelationManager;
 use App\Filament\Resources\ExamResource\RelationManagers\UserRelationManager;
 use App\Models\Exam;
 use App\Models\User;
@@ -163,7 +164,8 @@ class ExamResource extends Resource
     public static function getRelations(): array
     {
         return [
-            UserRelationManager::class,
+            // UserRelationManager::class,
+            ResponsesRelationManager::class,
         ];
     }
 

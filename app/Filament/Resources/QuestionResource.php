@@ -33,10 +33,12 @@ class QuestionResource extends Resource
                 TextInput::make('text')
                     ->required()
                     ->maxLength(255),
-                // FileUpload::make('text')
-                //     ->label('Question')
-                //     ->image()
-                //     ->directory('questions_images'),
+                FileUpload::make('image')
+                    ->image()
+                    ->directory('questions_images')
+                    ->maxSize(2048)
+                    ->imageCropAspectRatio('1:1')
+                    ->required(),
 
                 Select::make('expected_answer')
                     ->label('Réponse attendue')
@@ -60,9 +62,7 @@ class QuestionResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('text')
                     ->searchable(),
-                // Tables\Columns\ImageColumn::make('text'),
-                // Tables\Columns\TextColumn::make('expected_answer')
-                //     ->formatStateUsing(fn ($state) => $state ? 'Oui' : 'Non'),
+                Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\IconColumn::make('expected_answer')
                     ->label('Réponse attendue')
                     ->boolean()

@@ -28,7 +28,7 @@ class Exam extends Model
 
     public function responses()
     {
-        return $this->hasMany(Response::class, 'fk_exam_id');
+        return $this->hasMany(Response::class, 'exam_id');
     }
 
     public function questions()
@@ -36,10 +36,10 @@ class Exam extends Model
         return $this->hasManyThrough(
             Question::class,
             Response::class,
-            'fk_exam_id', // Clé étrangère dans la table Response
+            'exam_id', // Clé étrangère dans la table Response
             'id',          // Clé primaire dans la table Question
             'id',          // Clé primaire dans la table Exam
-            'fk_question_id' // Clé étrangère dans la table Response pour la question
+            'question_id' // Clé étrangère dans la table Response pour la question
         );
     }
 

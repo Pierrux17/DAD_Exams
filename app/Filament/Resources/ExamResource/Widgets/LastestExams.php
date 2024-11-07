@@ -30,7 +30,6 @@ class LastestExams extends BaseWidget
                     ->sortable(),
                 Tables\Columns\TextColumn::make('topic.name'),
                 Tables\Columns\TextColumn::make('status')
-                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('is_validated')
                     ->formatStateUsing(fn ($state) => $state ? 'Oui' : 'Non')

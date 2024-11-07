@@ -12,7 +12,7 @@ class Question extends Model
     protected $table = 'questions';
     protected $primaryKey = 'id';
     public $timestamps = true;
-    protected $fillable = ['text', 'expected_answer', 'topic_id'];
+    protected $fillable = ['text', 'image', 'expected_answer', 'topic_id'];
 
     public function topic(){
         return $this->belongsTo(Topic::class);
