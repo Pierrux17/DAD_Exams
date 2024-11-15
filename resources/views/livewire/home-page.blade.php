@@ -1,6 +1,6 @@
 <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
-        <h1 class="text-4xl text-center text-blue-500 font-bold mb-6">HomePage</h1>
+        <h1 class="text-4xl text-center text-blue-500 font-bold mb-6">Page d'accueil</h1>
 
         <p class="text-center text-gray-700 mb-6">Entrez votre code</p>
         

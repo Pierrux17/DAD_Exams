@@ -105,4 +105,16 @@ class ExamRepository implements ExamRepositoryInterface
             ->with(['responses.question', 'user', 'topic'])
             ->findOrFail($examId);
     }
+
+    public function validateExam(int $examId)
+    {
+        try {
+            $exam = $this->exam->findOrFail($examId);
+            $exam->is_validated = true;
+            return $exam->save();
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return false;
+        }
+    }
 }

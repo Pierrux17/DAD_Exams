@@ -11,6 +11,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 class ExamsInProgress extends BaseWidget
 {
     protected int | string | array $columnSpan = 'half';
+    protected static ?string $heading = 'Examens en cours';
 
     public function table(Table $table): Table
     {

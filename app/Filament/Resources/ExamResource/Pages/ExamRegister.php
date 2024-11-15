@@ -94,4 +94,9 @@ class ExamRegister extends CreateRecord
             ]);
         }
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return route('filament.admin.pages.dashboard');
+    }
 }

@@ -1,4 +1,4 @@
-<div class="flex justify-center">
+<div class="flex justify-center" translate="no">
     <div class="w-2/5 p-8 mt-12 bg-white shadow-lg rounded-lg">
         @if ($exam)
 

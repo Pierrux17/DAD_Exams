@@ -58,7 +58,7 @@ class Exam extends Model
 
     public function generateToken()
     {
-        $this->token = Str::random(60);
+        $this->token = Str::random(10);
         $this->token_expires_at = now()->addDays(20);
         $this->save();
 

@@ -126,6 +126,7 @@ class ExamResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('topic.name')
             ])
+            ->defaultSort('exam_date', 'desc')
             ->filters([
                 SelectFilter::make('status')
                     ->label('Filtrer par Statut')
@@ -173,7 +174,7 @@ class ExamResource extends Resource
     {
         return [
             'index' => Pages\ListExams::route('/'),
-            'create' => Pages\CreateExam::route('/create'),
+            // 'create' => Pages\CreateExam::route('/create'),
             'edit' => Pages\EditExam::route('/{record}/edit'),
             'exam_register' => Pages\ExamRegister::route('/exam-register'),
         ];

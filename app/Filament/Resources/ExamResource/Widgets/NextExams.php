@@ -11,6 +11,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 class NextExams extends BaseWidget
 {
     protected int | string | array $columnSpan = 'half';
+    protected static ?string $heading = 'Prochains examens';
 
     public function table(Table $table): Table
     {
@@ -24,10 +25,15 @@ class NextExams extends BaseWidget
                     ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('d/m/Y')),
                 Tables\Columns\TextColumn::make('user.company.name')
                     ->sortable()
-                    ->default('Entreprise'),
+                    ->default('Entreprise')
+                    ->label('Abattoir'),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('topic.name'),
+                    ->sortable()
+                    ->label('Participant'),
+                Tables\Columns\TextColumn::make('topic.name')
+                    ->label('Espèce'),
+                Tables\Columns\TextColumn::make('token')
+                    ->label('Code d\'accès'),
             ]);
     }
 }

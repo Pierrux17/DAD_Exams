@@ -39,7 +39,6 @@ class QuestionResource extends Resource
                     ->maxSize(2048)
                     ->imageCropAspectRatio('1:1')
                     ->required(),
-
                 Select::make('expected_answer')
                     ->label('Réponse attendue')
                     ->options([
