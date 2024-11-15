@@ -17,6 +17,7 @@ class QuestionPage extends Component
     public $token;
     public $responses = [];
     public $userAnswers = [];
+    public $currentQuestionIndex = 0;
 
     public function boot(ExamRepositoryInterface $examRepository)
     {
@@ -40,36 +41,70 @@ class QuestionPage extends Component
         }
     }
 
-    public function submitResponses()
+    public function nextQuestion()
     {
-        foreach ($this->responses as $index => $response) {
-            if (isset($this->userAnswers[$index])) {
-                $response->user_answer = $this->userAnswers[$index];
-                $response->is_correct = ($response->question->expected_answer == $this->userAnswers[$index]);
+        // Save response
+        if (isset($this->userAnswers[$this->currentQuestionIndex])) {
+            $this->responses[$this->currentQuestionIndex]->user_answer = $this->userAnswers[$this->currentQuestionIndex];
 
-                Log::info("User answer for question ID {$response->question->id}: {$response->user_answer}");
-                $response->save();
-            }
+            // Calculate if response is correct
+            $this->responses[$this->currentQuestionIndex]->is_correct = ($this->responses[$this->currentQuestionIndex]->question->expected_answer === $this->userAnswers[$this->currentQuestionIndex]);
+
+            Log::info('Réponse de l\'utilisateur pour la question ID ' . $this->responses[$this->currentQuestionIndex]->question->id . ': ' . $this->userAnswers[$this->currentQuestionIndex]);
+
+            //Save in db
+            $this->responses[$this->currentQuestionIndex]->save();
         }
 
-        // $this->exam->status = 'Terminé';
-        // $this->exam->save();
+        // Go to next question
+        if ($this->currentQuestionIndex < count($this->responses) - 1) {
+            $this->currentQuestionIndex++;
+        } else {
+            session()->flash('message', 'Vous avez atteint la dernière question.');
+        }
+    }
 
-        // $this->examRepository->updateStatus($this->exam->id, 'Terminé');
+    public function submitResponses()
+    {
+        // Save last response
+        if (isset($this->userAnswers[$this->currentQuestionIndex])) {
+            $this->responses[$this->currentQuestionIndex]->user_answer = $this->userAnswers[$this->currentQuestionIndex];
 
+            $this->responses[$this->currentQuestionIndex]->is_correct = ($this->responses[$this->currentQuestionIndex]->question->expected_answer === $this->userAnswers[$this->currentQuestionIndex]);
+
+            Log::info('Réponse de l\'utilisateur pour la dernière question ID ' . $this->responses[$this->currentQuestionIndex]->question->id . ': ' . $this->userAnswers[$this->currentQuestionIndex]);
+
+            $this->responses[$this->currentQuestionIndex]->save();
+        }
+
+        // Récap des réponses
+        Log::info('Récapitulatif des réponses de l\'utilisateur :');
+        foreach ($this->responses as $response) {
+            Log::info('Question ID ' . $response->question->id
+                . ', Réponse utilisateur : ' . $response->user_answer
+                . ', Réponse attendue : ' . $response->question->expected_answer
+                . ', Correct : ' . ($response->is_correct ? 'Oui' : 'Non'));
+        }
+
+
+        // Évaluer l'examen
         $this->examRepository->evaluateExam($this->exam->id);
 
-        Log::info('Réponses soumises');
-        session()->flash('message', 'Réponses soumises avec succès.');
+        Log::info('Toutes les réponses ont été soumises.');
 
+        session()->flash('message', 'Examen terminé. Vos réponses ont été soumises avec succès.');
         return Redirect::route('exam.show', ['token' => $this->token]);
     }
+
 
     public function render()
     {
         return view('livewire.question-page', [
             'exam' => $this->exam,
             'responses' => $this->responses,
+            'currentResponse' => $this->responses[$this->currentQuestionIndex] ?? null,
+            'totalQuestions' => count($this->responses),
+            'currentQuestionNumber' => $this->currentQuestionIndex + 1,
         ]);
     }
 }
