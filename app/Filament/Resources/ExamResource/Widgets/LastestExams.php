@@ -28,7 +28,8 @@ class LastestExams extends BaseWidget
                     ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('d/m/Y')),
                 Tables\Columns\TextColumn::make('user.company.name')
                     ->sortable()
-                    ->default('Entreprise'),
+                    ->default('Entreprise')
+                    ->label('Abattoir'),
                 Tables\Columns\TextColumn::make('user.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('topic.name'),

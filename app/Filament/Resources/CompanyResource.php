@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 
 
 class CompanyResource extends Resource
@@ -37,7 +38,14 @@ class CompanyResource extends Resource
                 TextInput::make('vat')
                     ->label('Numéro de TVA')
                     ->required()
-                    ->maxLength(255)
+                    ->maxLength(255),
+                                
+                Select::make('topics')
+                    ->label('Topics')
+                    ->relationship('topics', 'name')
+                    ->multiple()
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 

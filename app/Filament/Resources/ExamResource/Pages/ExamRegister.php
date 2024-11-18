@@ -6,6 +6,7 @@ use App\Filament\Resources\ExamResource;
 use App\Models\Question;
 use App\Models\Response;
 use App\Models\Company;
+use App\Models\Topic;
 use App\Models\User;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
@@ -26,7 +27,7 @@ class ExamRegister extends CreateRecord
             ->schema([
                 Section::make('Entreprise')->schema([
                     Select::make('company_id')
-                        ->label('Entreprise')
+                        ->label('Abattoir')
                         ->options(Company::all()->pluck('name', 'id')->toArray())
                         ->required()
                         ->reactive()
@@ -54,7 +55,17 @@ class ExamRegister extends CreateRecord
                 Section::make('Informations')->schema([
                     Select::make('topic_id')
                         ->relationship('topic', 'name')
-                        ->required(),
+                        ->required()
+                        ->options(function (callable $get) {
+                            $companyId = $get('company_id');
+                            if ($companyId) {
+                                return Topic::whereHas('companies', function ($query) use ($companyId) {
+                                    $query->where('companies.id', $companyId);
+                                })->pluck('name', 'id');
+                            }
+                            return [];
+                        })
+                        ->disabled(fn (callable $get) => !$get('company_id')),
 
                     TextInput::make('place')
                         ->label('Lieu de l\'examen'),

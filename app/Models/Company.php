@@ -13,4 +13,9 @@ class Company extends Model
     protected $primaryKey = 'id';
     public $timestamps = true;
     protected $fillable = ['name', 'email', 'vat'];
+
+    public function topics()
+    {
+        return $this->belongsToMany(Topic::class, 'companies_topics');
+    }
 }

@@ -24,6 +24,7 @@ class User extends Authenticatable
         'phone',
         'password',
         'role',
+        'nationality_id',
         'company_id'
     ];
 
@@ -50,6 +51,11 @@ class User extends Authenticatable
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function nationality()
+    {
+        return $this->belongsTo(Nationality::class);
     }
 
     public function exams()

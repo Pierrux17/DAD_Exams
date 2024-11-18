@@ -37,7 +37,7 @@ class ExamResource extends Resource
             ->schema([
                 Section::make('Entreprise')->schema([
                     Select::make('company_id')
-                        ->label('Entreprise')
+                        ->label('Abattoir')
                         ->options(Company::all()->pluck('name', 'id')->toArray())
                         ->required()
                         ->reactive()
@@ -121,7 +121,7 @@ class ExamResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.company.name')
-                    ->label('Entreprise')
+                    ->label('Abattoir')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('topic.name')

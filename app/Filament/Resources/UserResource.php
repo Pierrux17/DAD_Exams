@@ -65,6 +65,10 @@ class UserResource extends Resource
                     ->nullable()
                     ->label('Entreprise')
                     ->visible(fn ($get) => $get('role') === 'client'), // Visible uniquement pour les participants
+                Select::make('nationality_id')
+                    ->relationship('nationality', 'name')
+                    ->nullable()
+                    ->label('Nationalité')
             ]);
     }
 
