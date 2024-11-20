@@ -15,6 +15,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
@@ -22,14 +23,18 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\DatePicker;
+use Filament\Notifications\Notification;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\Log;
 
 class ExamResource extends Resource
 {
     protected static ?string $model = Exam::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+
+    protected static ?string $navigationLabel = 'Examens';
 
     public static function form(Form $form): Form
     {
@@ -90,12 +95,20 @@ class ExamResource extends Resource
                         ])
                         ->default(false)
                         ->required(),
+                    TextInput::make('token')
+                        ->label('Code d\'accès')
+                        ->disabled()
+                        ->hiddenOn('create'),
                 ])->columns(3),
 
                 Section::make('Résultat')->schema([
                     TextInput::make('result')
-                        ->numeric(),
-                ])
+                        ->numeric()
+                        ->disabled(),
+                    TextInput::make('status')
+                        ->disabled(),
+                ])->hiddenOn('create')
+                ->columns(2)
             ]);
     }
 
@@ -124,7 +137,9 @@ class ExamResource extends Resource
                     ->label('Abattoir')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('topic.name')
+                Tables\Columns\TextColumn::make('topic.name'),
+                Tables\Columns\TextColumn::make('token')
+                    ->label('Code d\'accès'),
             ])
             ->defaultSort('exam_date', 'desc')
             ->filters([
@@ -158,8 +173,32 @@ class ExamResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('validate')
+                        ->label('Valider les examens')
+                        ->icon('heroicon-o-check')
+                        ->action(function (Collection $records) {
+                            $records->each(function (Exam $exam) {
+                                $exam->update(['is_validated' => true]);
+                            });
+
+                            Notification::make()
+                                ->title('Les examens ont été validés avec succès')
+                                ->success()
+                                ->send();
+                        })
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(function (Builder $query) {
+                $user = auth()->user();
+                
+                if ($user->isSupervisor()) {
+                    $query->whereHas('user', function ($q) use ($user) {
+                        $q->where('company_id', $user->company_id);
+                    });
+                }
+                
+                return $query;
+            });
     }
 
     public static function getRelations(): array
@@ -178,5 +217,5 @@ class ExamResource extends Resource
             'edit' => Pages\EditExam::route('/{record}/edit'),
             'exam_register' => Pages\ExamRegister::route('/exam-register'),
         ];
-    }
+    } 
 }

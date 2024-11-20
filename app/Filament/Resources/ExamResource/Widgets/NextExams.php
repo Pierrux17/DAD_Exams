@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Illuminate\Database\Eloquent\Builder;
 
 class NextExams extends BaseWidget
 {
@@ -34,6 +35,17 @@ class NextExams extends BaseWidget
                     ->label('Espèce'),
                 Tables\Columns\TextColumn::make('token')
                     ->label('Code d\'accès'),
-            ]);
+            ])
+            ->modifyQueryUsing(function (Builder $query) {
+                $user = auth()->user();
+                
+                if ($user->isSupervisor()) {
+                    $query->whereHas('user', function ($q) use ($user) {
+                        $q->where('company_id', $user->company_id);
+                    });
+                }
+                
+                return $query;
+            });
     }
 }

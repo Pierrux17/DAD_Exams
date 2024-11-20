@@ -71,4 +71,9 @@ class TopicResource extends Resource
             'edit' => Pages\EditTopic::route('/{record}/edit'),
         ];
     }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->isAdmin();
+    }
 }

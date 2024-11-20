@@ -3,13 +3,16 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -68,6 +71,7 @@ class User extends Authenticatable
         return [
             'admin',
             'client',
+            'supervisor',
         ];
     }
 
@@ -81,10 +85,25 @@ class User extends Authenticatable
         return $this->role === 'client';
     }
 
-    // public function setPasswordAttribute($value)
-    // {
-    //     if ($value) {
-    //         $this->attributes['password'] = bcrypt($value);
-    //     }
-    // }
+    public function isSupervisor()
+    {
+        return $this->role === 'supervisor';
+    }
+
+    
+    /**
+     * Function Access Panel Admin and Supervisor
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if($panel->getId() === 'admin' && !$this->isAdmin()) {
+            return false;
+        }
+
+        if($panel->getId() === 'supervisor' && !$this->isSupervisor()) {
+            return false;
+        }
+
+        return true;
+    }
 }

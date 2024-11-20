@@ -29,7 +29,8 @@ class ResponsesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('id')
             ->columns([
-                // Tables\Columns\TextColumn::make('id'),
+                Tables\Columns\TextColumn::make('question.id')
+                    ->label('Question Id'),
                 Tables\Columns\TextColumn::make('question.text'),
                 Tables\Columns\IconColumn::make('user_answer')
                     ->trueIcon('heroicon-o-hand-thumb-up')

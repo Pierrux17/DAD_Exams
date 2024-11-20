@@ -22,7 +22,7 @@ class ExamRepository implements ExamRepositoryInterface
 
     public function findByToken(string $token)
     {
-        return $this->exam = Exam::where('token', $token)
+        return Exam::where('token', $token)
             ->where('token_expires_at', '>', now())
             ->with(['user', 'topic'])
             ->first();

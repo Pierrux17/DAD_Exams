@@ -26,7 +26,8 @@ class QuestionPage extends Component
 
     public function mount($token)
     {
-        $this->exam = $this->examRepository->findByToken($this->token);
+        $this->token = $token;
+        $this->exam = $this->examRepository->findByToken($token);
 
         if ($this->exam) {
             $this->responses = Response::where('exam_id', $this->exam->id)

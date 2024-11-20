@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 class HomePage extends Component
 {
     public $token;
+    public $showErrorPopup = false;
 
     public function submit()
     {

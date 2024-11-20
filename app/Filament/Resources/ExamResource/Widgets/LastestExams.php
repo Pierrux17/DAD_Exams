@@ -6,15 +6,17 @@ use App\Filament\Resources\ExamResource;
 use App\Models\Exam;
 use App\Models\Question;
 use Carbon\Carbon;
+use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 class LastestExams extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
-    protected static ?string $heading = 'Derniers examens';
+    protected static ?string $heading = 'Examens à valider';
 
     public function table(Table $table): Table
     {
@@ -40,8 +42,31 @@ class LastestExams extends BaseWidget
                     ->label('Validé'),
             ])->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('validate')
+                        ->label('Valider les examens')
+                        ->icon('heroicon-o-check')
+                        ->action(function (Collection $records) {
+                            $records->each(function (Exam $exam) {
+                                $exam->update(['is_validated' => true]);
+                            });
+
+                            Notification::make()
+                                ->title('Les examens ont été validés avec succès')
+                                ->success()
+                                ->send();
+                        })
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(function (Builder $query) {
+                $user = auth()->user();
+                
+                if ($user->isSupervisor()) {
+                    $query->whereHas('user', function ($q) use ($user) {
+                        $q->where('company_id', $user->company_id);
+                    });
+                }
+                
+                return $query;
+            });
     }
 }

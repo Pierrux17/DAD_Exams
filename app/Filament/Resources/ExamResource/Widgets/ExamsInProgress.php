@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Illuminate\Database\Eloquent\Builder;
 
 class ExamsInProgress extends BaseWidget
 {
@@ -32,6 +33,17 @@ class ExamsInProgress extends BaseWidget
                 Tables\Columns\TextColumn::make('topic.name'),
                 Tables\Columns\TextColumn::make('status')
                     ->sortable(),
-            ]);
+            ])
+            ->modifyQueryUsing(function (Builder $query) {
+                $user = auth()->user();
+                
+                if ($user->isSupervisor()) {
+                    $query->whereHas('user', function ($q) use ($user) {
+                        $q->where('company_id', $user->company_id);
+                    });
+                }
+                
+                return $query;
+            });
     }
 }

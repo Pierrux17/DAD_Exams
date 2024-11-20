@@ -24,6 +24,16 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->app['config']->set('filament.home_url', function () {
+            $user = auth()->user();
+            
+            if ($user->isSupervisor()) {
+                return '/supervisor';
+            }
+            
+            return '/admin';
+        });
+
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });

@@ -29,11 +29,13 @@ class ExamRegister extends CreateRecord
                     Select::make('company_id')
                         ->label('Abattoir')
                         ->options(Company::all()->pluck('name', 'id')->toArray())
+                        ->default(fn () => auth()->user()->isSupervisor() ? auth()->user()->company_id : null)
                         ->required()
                         ->reactive()
                         ->afterStateUpdated(function (callable $set) {
                             $set('user_id', null);
-                        }),
+                        })
+                        ->disabled(fn () => auth()->user()->isSupervisor()),
                 ])->columnSpan(1),
 
                 Section::make('Participant')->schema([
@@ -108,6 +110,12 @@ class ExamRegister extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
+        $user = auth()->user();
+        if ($user->isSupervisor())
+        {
+            return route('filament.supervisor.pages.dashboard');
+        }
+
         return route('filament.admin.pages.dashboard');
     }
 }

@@ -19,12 +19,15 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Components\Tab;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\Log;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    protected static ?string $navigationLabel = 'Utilisateurs';
 
     public static function form(Form $form): Form
     {
@@ -54,17 +57,36 @@ class UserResource extends Resource
                 Select::make('role')
                     ->required()
                     ->default('client')
-                    ->options([
-                        'client' => 'Participant',
-                        'admin' => 'Admin',
-                    ])
+                    ->options(function () {
+                        $user = auth()->user();
+                
+                        if ($user->isAdmin()) {
+                            return [
+                                'client' => 'Participant',
+                                'admin' => 'Admin',
+                                'supervisor' => 'Superviseur',
+                            ];
+                        }
+                
+                        if ($user->isSupervisor()) {
+                            return [
+                                'client' => 'Participant',
+                                'supervisor' => 'Superviseur',
+                            ];
+                        }
+                
+                        // Autres rôles (si nécessaire)
+                        return [];
+                    })
                     ->label('Rôle'),
                 Select::make('company_id')
                     ->relationship('company', 'name')
-                    ->required(fn ($get) => $get('role') === 'client') // Obligatoire pour les participants
-                    ->nullable()
-                    ->label('Entreprise')
-                    ->visible(fn ($get) => $get('role') === 'client'), // Visible uniquement pour les participants
+                    ->required(fn ($get) => !auth()->user()->isAdmin()) //Obligatoire sauf pour les admins
+                    ->default(fn () => auth()->user()->isSupervisor() ? auth()->user()->company_id : null)
+                    ->label('Abattoir')
+                    ->visible()
+                    ->disabled(fn () => auth()->user()->isSupervisor())
+                    ->dehydrated(), //obligatoire pour insérer les champs disabled
                 Select::make('nationality_id')
                     ->relationship('nationality', 'name')
                     ->nullable()
@@ -103,7 +125,17 @@ class UserResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(function (Builder $query) {
+                $user = auth()->user();
+                
+                if ($user->isSupervisor()) {
+                    // Supervisors can only see users from their own company
+                    $query->where('company_id', $user->company_id);
+                }
+                
+                return $query;
+            });
     }
 
     public static function getRelations(): array

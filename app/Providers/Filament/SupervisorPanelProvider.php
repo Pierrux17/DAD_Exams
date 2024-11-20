@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\RoleRedirection;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -20,35 +21,38 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Resources\ExamResource\Widgets as ExamWidgets;
 use App\Filament\Resources\UserResource\Widgets as UserWidgets;
 
-use App\Http\Middleware\RoleRedirection;
 
-class AdminPanelProvider extends PanelProvider
+class SupervisorPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
-            ->id('admin')
-            ->path('admin')
+            ->id('supervisor')
+            ->path('supervisor')
             ->login()
             ->passwordReset()
             ->profile(isSimple: false)
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Emerald,
             ])
             ->sidebarCollapsibleOnDesktop()
+            // ->discoverResources(in: app_path('Filament/Supervisor/Resources'), for: 'App\\Filament\\Supervisor\\Resources')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->resources([
+                
+            ])
+            ->discoverPages(in: app_path('Filament/Supervisor/Pages'), for: 'App\\Filament\\Supervisor\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Supervisor/Widgets'), for: 'App\\Filament\\Supervisor\\Widgets')
             ->widgets([
                 ExamWidgets\NewExamButton::class,
                 UserWidgets\CustomAccountWidget::class,
                 // Widgets\AccountWidget::class,
                 ExamWidgets\ExamsInProgress::class,
                 ExamWidgets\NextExams::class,
+                ExamWidgets\LastestExams::class,
             ])
             ->middleware([
                 EncryptCookies::class,

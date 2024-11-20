@@ -19,8 +19,6 @@ class ResponseResource extends Resource
 {
     protected static ?string $model = Response::class;
 
-    protected static bool $shouldRegisterNavigation = false;
-
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-bottom-center-text';
 
     public static function form(Form $form): Form
@@ -106,5 +104,10 @@ class ResponseResource extends Resource
             'create' => Pages\CreateResponse::route('/create'),
             'edit' => Pages\EditResponse::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->isAdmin();
     }
 }

@@ -23,6 +23,8 @@ class CompanyResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
+    protected static ?string $navigationLabel = 'Abattoirs';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -86,7 +88,17 @@ class CompanyResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(function (Builder $query) {
+                $user = auth()->user();
+                
+                if ($user->isSupervisor()) {
+                    // Supervisors can only see users from their own company
+                    $query->where('id', $user->company_id);
+                }
+                
+                return $query;
+            });
     }
 
     public static function getRelations(): array
