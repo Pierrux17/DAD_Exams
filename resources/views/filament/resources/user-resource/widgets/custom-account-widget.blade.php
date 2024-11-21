@@ -23,7 +23,8 @@
                     {{ __('Bienvenue') }} {{ filament()->getUserName($user) }}
                 </h2>
                 
-                <div class="flex items-center justify-center space-x-8 mt-3">
+                {{-- <div class="flex items-center justify-around mt-3"> --}}
+                <div class="flex items-center justify-center gap-6 mt-3">
                     @if($user->company && $user->company->name)
                     <div class="inline-flex items-center space-x-2">
                         <x-heroicon-m-building-office-2 class="w-6 h-5 text-primary-600 dark:text-primary-400"/>

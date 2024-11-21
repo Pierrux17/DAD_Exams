@@ -64,7 +64,7 @@ class ExamResource extends Resource
                             }
                             return [];
                         })
-                        ->disabled(fn (callable $get) => !$get('company_id')),
+                        ->disabled(fn(callable $get) => !$get('company_id')),
                 ])->columnSpan(1),
 
                 Section::make('Informations')->schema([
@@ -108,7 +108,7 @@ class ExamResource extends Resource
                     TextInput::make('status')
                         ->disabled(),
                 ])->hiddenOn('create')
-                ->columns(2)
+                    ->columns(2)
             ]);
     }
 
@@ -177,12 +177,14 @@ class ExamResource extends Resource
                         ->label('Valider les examens')
                         ->icon('heroicon-o-check')
                         ->action(function (Collection $records) {
-                            $records->each(function (Exam $exam) {
+                            $validatedCount = $records->filter(function (Exam $exam) {
+                                return in_array($exam->status, ['Réussi', 'Raté']);
+                            })->each(function (Exam $exam) {
                                 $exam->update(['is_validated' => true]);
-                            });
+                            })->count();
 
                             Notification::make()
-                                ->title('Les examens ont été validés avec succès')
+                                ->title("{$validatedCount} examens ont été validés avec succès")
                                 ->success()
                                 ->send();
                         })
@@ -190,13 +192,13 @@ class ExamResource extends Resource
             ])
             ->modifyQueryUsing(function (Builder $query) {
                 $user = auth()->user();
-                
+
                 if ($user->isSupervisor()) {
                     $query->whereHas('user', function ($q) use ($user) {
                         $q->where('company_id', $user->company_id);
                     });
                 }
-                
+
                 return $query;
             });
     }
@@ -217,5 +219,5 @@ class ExamResource extends Resource
             'edit' => Pages\EditExam::route('/{record}/edit'),
             'exam_register' => Pages\ExamRegister::route('/exam-register'),
         ];
-    } 
+    }
 }

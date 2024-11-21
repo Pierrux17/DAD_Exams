@@ -49,6 +49,7 @@ class SupervisorPanelProvider extends PanelProvider
             ->widgets([
                 ExamWidgets\NewExamButton::class,
                 UserWidgets\CustomAccountWidget::class,
+                ExamWidgets\ExamSupervisorStats::class,
                 // Widgets\AccountWidget::class,
                 ExamWidgets\ExamsInProgress::class,
                 ExamWidgets\NextExams::class,

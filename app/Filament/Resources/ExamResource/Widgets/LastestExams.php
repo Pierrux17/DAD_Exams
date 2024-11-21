@@ -40,18 +40,22 @@ class LastestExams extends BaseWidget
                 Tables\Columns\TextColumn::make('is_validated')
                     ->formatStateUsing(fn ($state) => $state ? 'Oui' : 'Non')
                     ->label('Validé'),
-            ])->bulkActions([
+            ])
+            ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\BulkAction::make('validate')
                         ->label('Valider les examens')
                         ->icon('heroicon-o-check')
                         ->action(function (Collection $records) {
-                            $records->each(function (Exam $exam) {
+                            $validatedCount = $records->filter(function (Exam $exam) {
+                                return in_array($exam->status, ['Réussi', 'Raté']);
+                            })->each(function (Exam $exam) {
                                 $exam->update(['is_validated' => true]);
-                            });
+                            })->count();
 
                             Notification::make()
-                                ->title('Les examens ont été validés avec succès')
+                                ->title("{$validatedCount} examens ont été validés avec succès")
                                 ->success()
                                 ->send();
                         })
