@@ -43,7 +43,6 @@ class LastestExams extends BaseWidget
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\BulkAction::make('validate')
                         ->label('Valider les examens')
                         ->icon('heroicon-o-check')
