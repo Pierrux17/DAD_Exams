@@ -1,12 +1,12 @@
 <div class="flex flex-row items-center justify-center min-h-screen" translate="no">
-    <div class="max-w-3xl mx-auto p-8">
+    <div class="w-1/3 mx-auto p-8">
         @if ($exam)
             <div class="bg-white rounded-lg shadow-lg mb-6">
                 <div class="p-8 bg-gray-50 rounded-lg">
                     <h1 class="text-2xl font-bold text-center mb-4">Examen</h1>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-12">
                         <div class="flex flex-col">
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center justify-center gap-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6 text-blue-500">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -14,11 +14,11 @@
                                 </svg>
                                 <label class="text-sm font-medium text-gray-700">Abattoir</label>
                             </div>
-                            <p class="mt-2 ml-3 text-m font-medium"><strong>{{ $exam->user->company->name }}</strong>
+                            <p class="mt-2 ml-3 text-m font-medium text-center"><strong>{{ $exam->user->company->name }}</strong>
                             </p>
                         </div>
                         <div class="flex flex-col">
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center justify-center gap-3">
                                 <svg width="25" height="25" class="text-blue-500"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
@@ -27,10 +27,10 @@
                                 </svg>
                                 <label class="text-sm font-medium text-gray-700">Date de l'examen</label>
                             </div>
-                            <p class="mt-2 ml-3 text-m font-medium"><strong>{{ $exam->exam_date }}</strong></p>
+                            <p class="mt-2 ml-3 text-m font-medium text-center"><strong>{{ $exam->exam_date }}</strong></p>
                         </div>
                         <div class="flex flex-col">
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center justify-center gap-3">
                                 <svg width="25" height="25" class="text-blue-500"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
@@ -39,10 +39,10 @@
                                 </svg>
                                 <label class="text-sm font-medium text-gray-700">Nom du participant</label>
                             </div>
-                            <p class="mt-2 ml-3 text-m font-medium"><strong>{{ $exam->user->name }}</strong></p>
+                            <p class="mt-2 ml-3 text-m font-medium text-center"><strong>{{ $exam->user->name }}</strong></p>
                         </div>
                         <div class="flex flex-col">
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center justify-center gap-3">
                                 <svg width="25" height="25" class="text-blue-500"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
@@ -53,10 +53,10 @@
                                 </svg>
                                 <label class="text-sm font-medium text-gray-700">Lieu de l'examen</label>
                             </div>
-                            <p class="mt-2 ml-3 text-m font-medium"><strong>{{ $exam->place }}</strong></p>
+                            <p class="mt-2 ml-3 text-m font-medium text-center"><strong>{{ $exam->place }}</strong></p>
                         </div>
                         <div class="flex flex-col">
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center justify-center gap-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6 text-blue-500">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke="currentColor"
@@ -65,13 +65,13 @@
                                 <label class="text-sm font-medium text-gray-700">Nationalité</label>
                             </div>
                             @if ($exam->user->nationality)
-                                <p class="mt-2 ml-3 text-m font-medium">
+                                <p class="mt-2 ml-3 text-m font-medium text-center">
                                     <strong>{{ $exam->user->nationality->name }}</strong>
                                 </p>
                             @endif
                         </div>
                         <div class="flex flex-col">
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center justify-center gap-3">
                                 <svg width="25" height="25" class="text-blue-500"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
@@ -80,12 +80,14 @@
                                 </svg>
                                 <label class="text-sm font-medium text-gray-700">Espèces</label>
                             </div>
-                            <p class="mt-2 ml-3 text-m font-medium"><strong>{{ $exam->topic->name }}</strong></p>
+                            <p class="mt-2 ml-3 text-m font-medium text-center"><strong>{{ $exam->topic->name }}</strong></p>
                         </div>
                     </div>
                 </div>
             </div>
     </div>
+
+    {{-- Progress bar --}}
     <div class="w-1/2 mx-auto p-4">
         <div class="mb-6">
             <div class="flex justify-between items-center mb-2">

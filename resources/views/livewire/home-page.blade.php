@@ -8,6 +8,7 @@
             <p class="text-center text-gray-700 mb-6">Entrez votre code</p>
 
             <form wire:submit="submit" class="space-y-4">
+                @csrf
                 <div>
                     <input type="text" wire:model.live="token" placeholder="Entrez votre code" required
                         class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
